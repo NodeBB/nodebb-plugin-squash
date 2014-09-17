@@ -11,6 +11,8 @@
 		}
 	});
 
+	var $btn;
+
 	function setupSquashButton(data) {
 		$.get(RELATIVE_PATH + '/api/' + data.url, function(data) {
 			if (data.isSelf) {
