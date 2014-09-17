@@ -10,7 +10,7 @@
 			});
 		}
 	});
-	
+
 	function setupSquashButton(data) {
 		$.get(RELATIVE_PATH + '/api/' + data.url, function(data) {
 			if (data.isSelf) {
@@ -29,7 +29,7 @@
 
 
 		function setupSquash() {
-			$btn.removeClass('btn-success').addClass('btn-danger').html('Squash');
+			$btn.removeClass('btn-info').addClass('btn-warning').html('Squash');
 			$btn.off('click').on('click', function(ev) {
 				socket.emit('plugins.superuser.squash');
 				setupUnsquash();
@@ -39,7 +39,7 @@
 		}
 
 		function setupUnsquash() {
-			$btn.removeClass('btn-danger').addClass('btn-success').html('Unsquash');
+			$btn.removeClass('btn-warning').addClass('btn-info').html('Unsquash');
 			$btn.off('click').on('click', function(ev) {
 				socket.emit('plugins.superuser.unsquash');
 				setupSquash();
