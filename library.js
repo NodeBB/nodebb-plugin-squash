@@ -24,8 +24,13 @@ plugin.init = function(app, middleware, controllers, callback) {
 
 plugin.getUsersPosts = function(data, callback) {
 	data.posts.forEach(function(el, i, arr) {
-		//if (parseInt(arr[i].uid, 10) === 
-		arr[i].deleted = '1';
+		if (parseInt(arr[i].uid, 10) !== data.uid) {
+			arr[i].user.groups.forEach(function(el) {
+				if (el.name === 'plugins:squash') {
+					arr[i].deleted = '1';
+				}
+			});
+		}
 	});
 
 	callback(null, data);
