@@ -4,7 +4,7 @@
 	var $btn;
 
 	$(window).on('action:plugins.superuser.setupButtons', function(userData) {
-		$('<a id="squash-btn" href="#" class="btn btn-primary btn-sm"></a>').insertAfter($('#unfollow-btn'));
+		$('<a id="squash-btn" href="#" class="btn btn-primary btn-sm"></a>').appendTo($('div#superuser'));
 		$btn = $('#squash-btn');
 
 		if (userData.banned) {
