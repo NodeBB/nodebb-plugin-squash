@@ -3,6 +3,7 @@
 var plugin = {},
 	winston = module.parent.require('winston'),
 	user = module.parent.require('./user'),
+	groups = module.parent.require('./groups'),
 	superusers;
 
 plugin.init = function(app, middleware, controllers, callback) {
@@ -21,6 +22,15 @@ plugin.init = function(app, middleware, controllers, callback) {
 	callback();
 };
 
+plugin.getUsersPosts = function(data, callback) {
+	data.posts.forEach(function(el, i, arr) {
+		//if (parseInt(arr[i].uid, 10) === 
+		arr[i].deleted = '1';
+	});
+
+	callback(null, data);
+};
+
 function squash(socket, data, callback) {
 	var uid = socket.uid ? socket.uid : 0;
 	superusers.isSuperUser(uid, function(err, isSuperUser) {
@@ -28,9 +38,8 @@ function squash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
+		groups.join('plugins:squash.squashed', data.uid);
 		user.setUserField(data.uid, 'squashed', 1, callback);
-
-		console.log('squashed');
 	});
 }
 
@@ -41,10 +50,8 @@ function unsquash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
-		console.log(data.uid);
+		groups.leave('plugins:squash.squashed', data.uid);
 		user.setUserField(data.uid, 'squashed', 0, callback);
-
-		console.log('unsquashed');
 	});
 }
 
