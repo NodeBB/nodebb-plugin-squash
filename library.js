@@ -19,7 +19,7 @@ plugin.init = function(app, middleware, controllers, callback) {
 		SocketPlugins.superuser.squash = squash;
 		SocketPlugins.superuser.unsquash = unsquash;
 
-	callback();
+	groups.create('plugins:squash', 'Squashed members', callback);
 };
 
 plugin.getUsersPosts = function(data, callback) {
@@ -38,8 +38,9 @@ function squash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
-		groups.join('plugins:squash.squashed', data.uid);
-		user.setUserField(data.uid, 'squashed', 1, callback);
+		groups.join('plugins:squash', data.uid, function() {
+			user.setUserField(data.uid, 'squashed', 1, callback);
+		});
 	});
 }
 
@@ -50,8 +51,9 @@ function unsquash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
-		groups.leave('plugins:squash.squashed', data.uid);
-		user.setUserField(data.uid, 'squashed', 0, callback);
+		groups.leave('plugins:squash', data.uid, function(){
+			user.setUserField(data.uid, 'squashed', 0, callback);
+		});
 	});
 }
 
