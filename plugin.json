@@ -8,7 +8,7 @@
 		{
 			"hook": "static:app.load", "method": "init"
 		}
-	]
+	],
 	"scripts": [
 		"static/lib/main.js"
 	]
