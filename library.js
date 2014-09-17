@@ -2,6 +2,7 @@
 
 var plugin = {},
 	winston = module.parent.require('winston'),
+	user = module.parent.require('./user'),
 	superusers;
 
 plugin.init = function(app, middleware, controllers, callback) {
@@ -27,6 +28,8 @@ function squash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
+		user.setUserField(data.uid, 'squashed', true, callback);
+
 		console.log('squashed');
 	});
 }
@@ -37,6 +40,8 @@ function unsquash(socket, data, callback) {
 		if (!isSuperUser) {
 			return callback(new Error('Not Allowed'));
 		}
+
+		user.setUserField(data.uid, 'squashed', false, callback);
 
 		console.log('unsquashed');
 	});
