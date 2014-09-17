@@ -28,7 +28,7 @@ function squash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
-		user.setUserField(data.uid, 'squashed', true, callback);
+		user.setUserField(data.uid, 'squashed', 1, callback);
 
 		console.log('squashed');
 	});
@@ -41,7 +41,8 @@ function unsquash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
-		user.setUserField(data.uid, 'squashed', false, callback);
+		console.log(data.uid);
+		user.setUserField(data.uid, 'squashed', 0, callback);
 
 		console.log('unsquashed');
 	});
