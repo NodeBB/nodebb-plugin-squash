@@ -1,0 +1,26 @@
+{
+  "name": "nodebb-plugin-trollify",
+  "version": "0.0.1",
+  "description": "Mark users as trolls to squash their posts",
+  "main": "library.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NodeBB/nodebb-plugin-trollify"
+  },
+  "keywords": [
+    "nodebb",
+    "plugin",
+    "trollify",
+    "trolls",
+    "squash"
+  ],
+  "author": {
+    "name": "psychobunny",
+    "email": "psycho.bunny@hotmail.com"
+  },
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/NodeBB/nodebb-plugin-trollify/issues"
+  },
+  "readmeFilename": "README.md"
+}
