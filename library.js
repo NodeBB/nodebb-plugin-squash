@@ -2,8 +2,8 @@
 
 var plugin = {},
 	winston = module.parent.require('winston'),
+	async = module.parent.require('async'),
 	user = module.parent.require('./user'),
-	groups = module.parent.require('./groups'),
 	superusers;
 
 plugin.init = function(app, middleware, controllers, callback) {
@@ -19,21 +19,37 @@ plugin.init = function(app, middleware, controllers, callback) {
 		SocketPlugins.superuser.squash = squash;
 		SocketPlugins.superuser.unsquash = unsquash;
 
-	groups.create('plugins:squash', 'Squashed members', callback);
+	callback();
 };
 
 plugin.getUsersPosts = function(data, callback) {
-	data.posts.forEach(function(el, i, arr) {
-		if (parseInt(arr[i].uid, 10) !== data.uid) {
-			arr[i].user.groups.forEach(function(el) {
-				if (el.name === 'plugins:squash') {
-					arr[i].deleted = '1';
-				}
+	var userCache = {},
+		posts = [];
+
+
+	async.eachSeries(data.posts, function(post, next) {
+		var postUid = parseInt(post.uid, 10);
+
+		if (postUid === parseInt(data.uid, 10)) {
+			posts.push(post);
+			return next();
+		} else if (userCache[postUid]) {
+			post.deleted = userCache[postUid];
+			posts.push(post);
+			return next();
+		} else {
+			user.getUserField(postUid, 'squashed', function(err, squashed) {
+				post.deleted = squashed;
+				posts.push(post);
+				userCache[postUid] = squashed;
+
+				return next();
 			});
 		}
+	}, function(err) {
+		data.posts = posts;
+		callback(err, data);
 	});
-
-	callback(null, data);
 };
 
 function squash(socket, data, callback) {
@@ -43,9 +59,7 @@ function squash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
-		groups.join('plugins:squash', data.uid, function() {
-			user.setUserField(data.uid, 'squashed', 1, callback);
-		});
+		user.setUserField(data.uid, 'squashed', 1, callback);
 	});
 }
 
@@ -56,9 +70,7 @@ function unsquash(socket, data, callback) {
 			return callback(new Error('Not Allowed'));
 		}
 
-		groups.leave('plugins:squash', data.uid, function(){
-			user.setUserField(data.uid, 'squashed', 0, callback);
-		});
+		user.setUserField(data.uid, 'squashed', 0, callback);
 	});
 }
 
