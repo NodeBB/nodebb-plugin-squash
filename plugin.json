@@ -1,8 +1,8 @@
 {
-	"id": "nodebb-plugin-trollify",
-	"name": "NodeBB Trollify Plugin",
+	"id": "nodebb-plugin-squash",
+	"name": "NodeBB squash Plugin",
 	"description": "Mark users as trolls to squash their posts",
-	"url": "https://github.com/NodeBB/nodebb-plugin-trollify",
+	"url": "https://github.com/NodeBB/nodebb-plugin-squash",
 	"library": "./library.js",
 	"hooks": [
 		{
