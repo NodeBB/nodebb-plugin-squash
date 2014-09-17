@@ -26,23 +26,27 @@ plugin.getUsersPosts = function(data, callback) {
 	var userCache = {},
 		posts = [];
 
-
 	async.eachSeries(data.posts, function(post, next) {
 		var postUid = parseInt(post.uid, 10);
 
-		if (postUid === parseInt(data.uid, 10)) {
+		if (postUid === parseInt(data.uid, 10) || parseInt(post.deleted, 10) === 1) {
 			posts.push(post);
 			return next();
-		} else if (userCache[postUid]) {
-			post.deleted = userCache[postUid];
-			posts.push(post);
+		} else if (typeof userCache[postUid] !== 'undefined') {
+			if (userCache[postUid] === 0) {
+				posts.push(post);
+			}
+
 			return next();
 		} else {
 			user.getUserField(postUid, 'squashed', function(err, squashed) {
-				post.deleted = squashed;
-				posts.push(post);
-				userCache[postUid] = squashed;
+				squashed = squashed ? parseInt(squashed, 10) : 0;
 
+				if (squashed === 0) {
+					posts.push(post);
+				}
+
+				userCache[postUid] = squashed;
 				return next();
 			});
 		}
