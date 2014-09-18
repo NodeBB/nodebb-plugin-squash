@@ -10,6 +10,9 @@
 		},
 		{
 			"hook": "filter:post.getPosts", "method": "getUsersPosts"
+		},
+		{
+			"hook": "filter:sockets.sendNewPostsToUids", "method": "modifyUids"
 		}
 	],
 	"scripts": [

@@ -56,6 +56,17 @@ plugin.getUsersPosts = function(data, callback) {
 	});
 };
 
+plugin.modifyUids = function(data, callback) {
+	user.getUserField(data.uidFrom, 'squashed', function(err, squashed) {
+		data.squashed = squashed ? parseInt(squashed, 10) : 0;
+		if (squashed) {
+			data.uidsTo = [];
+		}
+		
+		callback(err, data);
+	});
+};
+
 function squash(socket, data, callback) {
 	var uid = socket.uid ? socket.uid : 0;
 	superusers.isSuperUser(uid, function(err, isSuperUser) {
