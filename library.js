@@ -58,11 +58,11 @@ plugin.getUsersPosts = function(data, callback) {
 
 plugin.modifyUids = function(data, callback) {
 	user.getUserField(data.uidFrom, 'squashed', function(err, squashed) {
-		data.squashed = squashed ? parseInt(squashed, 10) : 0;
+		var squashed = squashed ? parseInt(squashed, 10) : 0;
 		if (squashed) {
 			data.uidsTo = [];
 		}
-		
+
 		callback(err, data);
 	});
 };

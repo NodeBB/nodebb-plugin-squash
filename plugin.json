@@ -12,7 +12,7 @@
 			"hook": "filter:post.getPosts", "method": "getUsersPosts"
 		},
 		{
-			"hook": "filter:sockets.sendNewPostsToUids", "method": "modifyUids"
+			"hook": "filter:sockets.sendNewPostToUids", "method": "modifyUids"
 		}
 	],
 	"scripts": [
