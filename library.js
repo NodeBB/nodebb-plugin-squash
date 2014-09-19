@@ -27,6 +27,10 @@ plugin.getUsersPosts = function(data, callback) {
 		posts = [];
 
 	async.eachSeries(data.posts, function(post, next) {
+		if (!post) {
+			return next();
+		}
+		
 		var postUid = parseInt(post.uid, 10);
 
 		if (postUid === parseInt(data.uid, 10) || parseInt(post.deleted, 10) === 1) {
