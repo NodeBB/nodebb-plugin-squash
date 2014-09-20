@@ -4,6 +4,8 @@ var plugin = {},
 	winston = module.parent.require('winston'),
 	async = module.parent.require('async'),
 	user = module.parent.require('./user'),
+	groups = module.parent.require('./groups'),
+	meta = module.parent.require('./meta'),
 	superusers;
 
 plugin.init = function(app, middleware, controllers, callback) {
@@ -30,7 +32,7 @@ plugin.getUsersPosts = function(data, callback) {
 		if (!post) {
 			return next();
 		}
-		
+
 		var postUid = parseInt(post.uid, 10);
 
 		if (postUid === parseInt(data.uid, 10) || parseInt(post.deleted, 10) === 1) {
@@ -73,7 +75,7 @@ plugin.modifyUids = function(data, callback) {
 
 function squash(socket, data, callback) {
 	var uid = socket.uid ? socket.uid : 0;
-	superusers.isSuperUser(uid, function(err, isSuperUser) {
+	isSuperUser(uid, function(err, isSuperUser) {
 		if (!isSuperUser) {
 			return callback(new Error('Not Allowed'));
 		}
@@ -84,13 +86,19 @@ function squash(socket, data, callback) {
 
 function unsquash(socket, data, callback) {
 	var uid = socket.uid ? socket.uid : 0;
-	superusers.isSuperUser(uid, function(err, isSuperUser) {
+	isSuperUser(uid, function(err, isSuperUser) {
 		if (!isSuperUser) {
 			return callback(new Error('Not Allowed'));
 		}
 
 		user.setUserField(data.uid, 'squashed', 0, callback);
 	});
+}
+
+function isSuperUser(uid, callback) {
+	var group = meta.config['superuser:groupname'] || '';
+
+	groups.isMember(uid, group, callback);
 }
 
 module.exports = plugin;
