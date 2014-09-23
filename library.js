@@ -24,6 +24,42 @@ plugin.init = function(app, middleware, controllers, callback) {
 	callback();
 };
 
+plugin.getPostSummaries = function(data, callback) {
+	var uids = [],
+		posts = data.posts;
+
+	posts.forEach(function(el) {
+		if (uids.indexOf(el.uid) === -1) {
+			uids.push(el.uid);
+		}
+	});
+
+	user.getMultipleUserFields(uids, ['squashed'], function(err, usersData) {
+		var users = {},
+			filteredPosts = [];
+
+		uids.forEach(function(uid, idx) {
+			users[uid] = usersData[idx].squashed;
+		});
+
+		posts.forEach(function(post, idx) {
+			if (parseInt(data.uid, 10) === parseInt(post.uid, 10) || parseInt(post.deleted, 10) === 1) {
+				filteredPosts.push(post);
+			} else {
+				var squashed = users[post.uid] ? parseInt(users[post.uid], 10) : 0;
+
+				if (squashed === 0) {
+					filteredPosts.push(post);
+				}
+			}
+		});
+
+		data.posts = filteredPosts;
+
+		callback(err, data);
+	});
+};
+
 plugin.getUsersTopics = function(data, callback) {
 	var uids = [],
 		topics = data.topics;
@@ -42,14 +78,12 @@ plugin.getUsersTopics = function(data, callback) {
 			users[uid] = usersData[idx].squashed;
 		});
 
-		console.log(users);
-
 		topics.forEach(function(topic, idx) {
 			if (parseInt(data.uid, 10) === parseInt(topic.uid, 10) || parseInt(topic.deleted, 10) === 1) {
 				filteredTopics.push(topic);
 			} else {
 				var squashed = users[topic.uid] ? parseInt(users[topic.uid], 10) : 0;
-				console.log(squashed, squashed === 0, topic.title);
+
 				if (squashed === 0) {
 					filteredTopics.push(topic);
 				}

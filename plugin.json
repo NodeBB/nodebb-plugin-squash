@@ -16,6 +16,9 @@
 		},
 		{
 			"hook": "filter:topics.get", "method": "getUsersTopics"
+		},
+		{
+			"hook": "filter:post.getPostSummaryByPids", "method": "getPostSummaries"
 		}
 	],
 	"scripts": [
