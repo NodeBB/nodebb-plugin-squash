@@ -12,13 +12,13 @@
 			"hook": "filter:post.getPosts", "method": "getUsersPosts"
 		},
 		{
+			"hook": "filter:post.getPostSummaryByPids", "method": "getUsersPosts"
+		},
+		{
 			"hook": "filter:sockets.sendNewPostToUids", "method": "modifyUids"
 		},
 		{
 			"hook": "filter:topics.get", "method": "getUsersTopics"
-		},
-		{
-			"hook": "filter:post.getPostSummaryByPids", "method": "getPostSummaries"
 		}
 	],
 	"scripts": [

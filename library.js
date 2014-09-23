@@ -24,42 +24,6 @@ plugin.init = function(app, middleware, controllers, callback) {
 	callback();
 };
 
-plugin.getPostSummaries = function(data, callback) {
-	var uids = [],
-		posts = data.posts;
-
-	posts.forEach(function(el) {
-		if (uids.indexOf(el.uid) === -1) {
-			uids.push(el.uid);
-		}
-	});
-
-	user.getMultipleUserFields(uids, ['squashed'], function(err, usersData) {
-		var users = {},
-			filteredPosts = [];
-
-		uids.forEach(function(uid, idx) {
-			users[uid] = usersData[idx].squashed;
-		});
-
-		posts.forEach(function(post, idx) {
-			if (parseInt(data.uid, 10) === parseInt(post.uid, 10) || parseInt(post.deleted, 10) === 1) {
-				filteredPosts.push(post);
-			} else {
-				var squashed = users[post.uid] ? parseInt(users[post.uid], 10) : 0;
-
-				if (squashed === 0) {
-					filteredPosts.push(post);
-				}
-			}
-		});
-
-		data.posts = filteredPosts;
-
-		callback(err, data);
-	});
-};
-
 plugin.getUsersTopics = function(data, callback) {
 	var uids = [],
 		topics = data.topics;
@@ -98,39 +62,37 @@ plugin.getUsersTopics = function(data, callback) {
 };
 
 plugin.getUsersPosts = function(data, callback) {
-	var userCache = {},
-		posts = [];
+	var uids = [],
+		posts = data.posts;
 
-	async.eachSeries(data.posts, function(post, next) {
-		if (!post) {
-			return next();
+	posts.forEach(function(el) {
+		if (uids.indexOf(el.uid) === -1) {
+			uids.push(el.uid);
 		}
+	});
 
-		var postUid = parseInt(post.uid, 10);
+	user.getMultipleUserFields(uids, ['squashed'], function(err, usersData) {
+		var users = {},
+			filteredPosts = [];
 
-		if (postUid === parseInt(data.uid, 10) || parseInt(post.deleted, 10) === 1) {
-			posts.push(post);
-			return next();
-		} else if (typeof userCache[postUid] !== 'undefined') {
-			if (userCache[postUid] === 0) {
-				posts.push(post);
-			}
+		uids.forEach(function(uid, idx) {
+			users[uid] = usersData[idx].squashed;
+		});
 
-			return next();
-		} else {
-			user.getUserField(postUid, 'squashed', function(err, squashed) {
-				squashed = squashed ? parseInt(squashed, 10) : 0;
+		posts.forEach(function(post, idx) {
+			if (parseInt(data.uid, 10) === parseInt(post.uid, 10) || parseInt(post.deleted, 10) === 1) {
+				filteredPosts.push(post);
+			} else {
+				var squashed = users[post.uid] ? parseInt(users[post.uid], 10) : 0;
 
 				if (squashed === 0) {
-					posts.push(post);
+					filteredPosts.push(post);
 				}
+			}
+		});
 
-				userCache[postUid] = squashed;
-				return next();
-			});
-		}
-	}, function(err) {
-		data.posts = posts;
+		data.posts = filteredPosts;
+
 		callback(err, data);
 	});
 };
