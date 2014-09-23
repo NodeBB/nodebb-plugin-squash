@@ -13,6 +13,9 @@
 		},
 		{
 			"hook": "filter:sockets.sendNewPostToUids", "method": "modifyUids"
+		},
+		{
+			"hook": "filter:topics.get", "method": "getUsersTopics"
 		}
 	],
 	"scripts": [
