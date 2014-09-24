@@ -66,7 +66,7 @@ plugin.getUsersPosts = function(data, callback) {
 		posts = data.posts;
 
 	posts.forEach(function(el) {
-		if (el.uid && uids.indexOf(el.uid) === -1) {
+		if (el && el.uid && uids.indexOf(el.uid) === -1) {
 			uids.push(el.uid);
 		}
 	});
