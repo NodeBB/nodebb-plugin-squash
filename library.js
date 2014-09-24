@@ -66,7 +66,7 @@ plugin.getUsersPosts = function(data, callback) {
 		posts = data.posts;
 
 	posts.forEach(function(el) {
-		if (uids.indexOf(el.uid) === -1) {
+		if (el.uid && uids.indexOf(el.uid) === -1) {
 			uids.push(el.uid);
 		}
 	});
@@ -80,14 +80,18 @@ plugin.getUsersPosts = function(data, callback) {
 		});
 
 		posts.forEach(function(post, idx) {
-			if (parseInt(data.uid, 10) === parseInt(post.uid, 10) || parseInt(post.deleted, 10) === 1) {
-				filteredPosts.push(post);
-			} else {
-				var squashed = users[post.uid] ? parseInt(users[post.uid], 10) : 0;
-
-				if (squashed === 0) {
+			if (post.uid) {
+				if (parseInt(data.uid, 10) === parseInt(post.uid, 10) || parseInt(post.deleted, 10) === 1) {
 					filteredPosts.push(post);
+				} else {
+					var squashed = users[post.uid] ? parseInt(users[post.uid], 10) : 0;
+
+					if (squashed === 0) {
+						filteredPosts.push(post);
+					}
 				}
+			} else {
+				console.log('temporary... figuring out why posts dont have uids? ', post);
 			}
 		});
 
