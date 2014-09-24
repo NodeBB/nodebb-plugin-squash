@@ -80,7 +80,7 @@ plugin.getUsersPosts = function(data, callback) {
 		});
 
 		posts.forEach(function(post, idx) {
-			if (post.uid) {
+			if (post && post.uid) {
 				if (parseInt(data.uid, 10) === parseInt(post.uid, 10) || parseInt(post.deleted, 10) === 1) {
 					filteredPosts.push(post);
 				} else {
