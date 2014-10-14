@@ -90,8 +90,6 @@ plugin.getUsersPosts = function(data, callback) {
 						filteredPosts.push(post);
 					}
 				}
-			} else {
-				console.log('temporary... figuring out why posts dont have uids? ', post);
 			}
 		});
 
