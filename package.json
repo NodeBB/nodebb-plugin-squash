@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-squash",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Mark users as trolls to squash their posts",
   "main": "library.js",
   "repository": {
