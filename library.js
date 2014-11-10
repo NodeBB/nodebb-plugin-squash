@@ -8,13 +8,15 @@ var plugin = {},
 	meta = module.parent.require('./meta'),
 	superusers;
 
-plugin.init = function(app, middleware, controllers, callback) {
+plugin.init = function(params, callback) {
 	try {
 		superusers = require('../nodebb-plugin-superusers/library');
 	} catch (e) {
 		winston.warn('Please install and activate the SuperUsers plugin in order for this to work.');
 		return callback();
 	}
+
+	
 
 	var SocketPlugins = module.parent.require('./socket.io/plugins');
 		SocketPlugins.superuser = SocketPlugins.superuser || {};
